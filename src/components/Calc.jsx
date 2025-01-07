@@ -1,95 +1,121 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
+
 const Calc = () => {
+  const [value, setValue] = useState("");
 
-  const [value, setvalue] = useState('')
   const handleclick = (e) => {
-    setvalue (value + e.target.value);
-  }
+    setValue((prev) => prev + e.target.value);
+  };
+
   const clearinput = () => {
-    setvalue('');
-  }
+    setValue("");
+  };
+
   const deleteinput = () => {
-    setvalue(value.slice(0, -1));
-  }
+    setValue((prev) => prev.slice(0, -1));
+  };
+
   const calculate = () => {
-  try {
-    setvalue(eval(value).tostring()); 
-  } catch {
-    setvalue('Error');
-  }
-};
-  // if we want to add the calculator functionality to the calculator:
-  // useEffect(() => {
-  //   const handleKeyPress = (event) => {
-  //     const key = event.key;
+    try {
+      setValue(eval(value).toString());
+    } catch {
+      setValue("Error");
+    }
+  };
 
-  //     if ((key >= "0" && key <= "9") || ["+", "-", "*", "/", "."].includes(key)) {
-  //       setvalue((prev) => prev + key);
-  //     } else if (key === "Enter" || key === "=") {
-  //       calculate();
-  //     } else if (key === "Backspace") {
-  //       deleteinput();
-  //     } else if (key === "Escape") {
-  //       clearinput();
-  //     }
-  //   };
+  //  KEYBOARD SUPPORT
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const key = e.key;
 
-  //   window.addEventListener("keydown", handleKeyPress);
+      // numbers
+      if (!isNaN(key)) {
+        setValue((prev) => prev + key);
+      }
 
-  //   // Cleanup on unmount
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyPress);
-  //   };
-  // }, [value]); 
+      // operators & dot
+      if (["+", "-", "*", "/", "."].includes(key)) {
+        setValue((prev) => prev + key);
+      }
+
+      // Enter = calculate
+      if (key === "Enter") {
+        e.preventDefault();
+        calculate();
+      }
+
+      // Backspace = delete
+      if (key === "Backspace") {
+        setValue((prev) => prev.slice(0, -1));
+      }
+
+      // Escape = clear
+      if (key === "Escape") {
+        setValue("");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [value]);
 
   return (
+    <div className="h-[480px] w-[400px] bg-gray-950 rounded-[15px]
+                    shadow-[0_0_20px_4px_rgba(255,255,255,0.2)]
+                    text-gray-300 font-bold text-3xl p-4">
 
-    <div className='h-120 w-90 bg-gray-950 rounded-[15px] shadow-[0_0_20px_4px_rgba(255,255,255,0.2)] text-gray-300 font-bold text-3xl'>
-      <form action="">
-        <div>
-          <input className='mt-10 w-90 h-18 p-8 focus:outline-none focus:ring-0' type="text" placeholder='123456.....' value={value} readOnly/>
+      <input
+        className="mt-6 ml-2 border rounded-sm w-[360px] h-[72px] p-6
+                   focus:outline-none focus:ring-0 text-right bg-gray-700"
+        type="text"
+        placeholder="0"
+        value={value}
+        readOnly
+      />
+
+      <div className="mt-8 space-y-4">
+
+        <div className="btn grid grid-cols-4 gap-3 ">
+          <input type="button" value="AC" onClick={clearinput} />
+          <input type="button" value="DE" onClick={deleteinput} />
+          <input type="button" value="." onClick={handleclick} />
+          <input type="button" value="/" onClick={handleclick} />
         </div>
-        <div className='allButtons mt-10'>
-        <div className='btns'>
-          <input type="button" value="AC" onClick={clearinput}/>
-          <input type="button" value="DE" onClick={deleteinput}/>
-          <input type="button" value="." onClick={handleclick}/>
-          <input type="button" value="/" onClick={handleclick}/>
 
-        </div >
-        <div className='btns'>
-          <input type="button" value="7" onClick={handleclick}/>
-          <input type="button" value="8" onClick={handleclick}/>
-          <input type="button" value="9" onClick={handleclick}/>
+        <div className="btn grid grid-cols-4 gap-3">
+          <input type="button" value="7" onClick={handleclick} />
+          <input type="button" value="8" onClick={handleclick} />
+          <input type="button" value="9" onClick={handleclick} />
           <input type="button" value="*" onClick={handleclick} />
- 
-        </div> 
-        <div className='btns'> 
-          <input type="button" value="4" onClick={handleclick}/>
-          <input type="button" value="5" onClick={handleclick}/>
-          <input type="button" value="6" onClick={handleclick}/>
-          <input type="button" value="+" onClick={handleclick}/>
+        </div>
 
+        <div className="btn grid grid-cols-4 gap-3">
+          <input type="button" value="4" onClick={handleclick} />
+          <input type="button" value="5" onClick={handleclick} />
+          <input type="button" value="6" onClick={handleclick} />
+          <input type="button" value="+" onClick={handleclick} />
         </div>
-        <div className='btns'>
-          <input type="button" value="1" onClick={handleclick}/>
-          <input type="button" value="2" onClick={handleclick}/>
-          <input type="button" value="3" onClick={handleclick}/>
-          <input type="button" value="-" onClick={handleclick}/>
 
+        <div className="btn grid grid-cols-4 gap-3">
+          <input type="button" value="1" onClick={handleclick} />
+          <input type="button" value="2" onClick={handleclick} />
+          <input type="button" value="3" onClick={handleclick} />
+          <input type="button" value="-" onClick={handleclick} />
         </div>
-         <div className='btns'>
-          <input type="button" value="000" onClick={handleclick}/>
-          <input type="button" value="00"  onClick={handleclick}/>
-          <input type="button" value="0"   onClick={handleclick}/>
-          <input type="button" value="="   onClick={calculate}/>
 
+        <div className="btn grid grid-cols-4 gap-3">
+          <input type="button" value="000" onClick={handleclick} />
+          <input type="button" value="00" onClick={handleclick} />
+          <input type="button" value="0" onClick={handleclick} />
+          <input type="button" value="=" onClick={calculate} />
         </div>
-        </div>
-      </form>
+
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Calc
+export default Calc;
