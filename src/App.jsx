@@ -1,8 +1,11 @@
 import React from 'react'
+import Calc from './components/Calc'
 
 const App = () => {
   return (
-    <div className='text-black text-5xl font-bold'>Hello</div>
+    <div>
+      <Calc></Calc>
+    </div>
   )
 }
 
